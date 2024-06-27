@@ -1,0 +1,19 @@
+<launch>
+    <arg name="map_file"                  default="map1.yaml" />
+    <arg name="open_rviz"                 default="true" />
+
+
+    <!-- 打开map_server -->
+    <node pkg="map_server" name="map_server" type="map_server" args="$(find scout_slam)/maps/$(arg map_file)" />
+ 
+    <include file="$(find scout_my_control)/launch/move_base_test.launch" />
+ 
+    <!-- Run a static transform between /odom and /map -->
+    <node pkg="tf" type="static_transform_publisher" name="odom_map_broadcaster" args="0 0 0 0 0 0 /map /odom 100" />
+
+    <!-- rviz -->
+    <group if="$(arg open_rviz)">
+        <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find scout_navigation)/rviz/scout_navigation.rviz" />
+    </group>
+</launch>
+ 
